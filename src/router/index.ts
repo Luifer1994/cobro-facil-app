@@ -12,6 +12,7 @@ import authRoutes from "@/modules/auth/router/router";
 import usersRoutes from "@/modules/users/router/router";
 import TenantRoutes from "@/modules/tenants/router/router";
 import planRouter from "@/modules/plans/router/router";
+import clientRoutes from "@/modules/clients/router/router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,7 @@ const router = createRouter({
     ...usersRoutes,
     ...TenantRoutes,
     ...planRouter,
+    ...clientRoutes,
     {
       path: "/",
       name: "BlankPage",

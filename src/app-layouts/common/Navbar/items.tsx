@@ -18,13 +18,13 @@ export default function getItems(
     {
       label: "Inicio",
       key: "BlankPage",
-      icon: "heroicons:home",
+      icon: "carbon:dashboard-reference",
       routeName: "BlankPage"
     },
     {
       label: "Inquilinos",
       key: "tenant",
-      icon: "fluent:people-star-48-regular",
+      icon: "fluent-mdl2:home-verify",
       permission: ["tenants-module"],
       routeName: "Tenant-list"
     },
@@ -41,6 +41,13 @@ export default function getItems(
       icon: "iconoir:user",
       permission: ["users-module"],
       routeName: "user-list"
+    },
+    {
+      label: "Clients",
+      key: "client-list",
+      icon: "fluent:people-community-16-regular",
+      permission: ["clients-module"],
+      routeName: "client-list"
     },
   ];
 
