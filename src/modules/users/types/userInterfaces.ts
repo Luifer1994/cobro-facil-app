@@ -31,6 +31,7 @@ export interface User {
     role_id?: number;
     localOnly?: boolean,
     pendingUpdate?: boolean;
+    phone?: string;
 }
 
 export interface UserState {

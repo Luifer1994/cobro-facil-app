@@ -19,6 +19,10 @@
                         <n-input v-model:value="user.email" placeholder="Correo" />
                     </n-form-item-gi>
 
+                    <n-form-item-gi label="Celular" path="phone">
+                        <n-input v-model:value="user.phone" placeholder="Celular" />
+                    </n-form-item-gi>
+
                     <n-form-item-gi label="Contraseña" path="password">
                         <n-input v-model:value="user.password" placeholder="Contraseña" />
                     </n-form-item-gi>
