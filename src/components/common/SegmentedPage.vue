@@ -72,98 +72,123 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, useSlots, watch } from "vue"
+import {
+  computed,
+  onMounted,
+  ref,
+  toRefs,
+  useSlots,
+  watch,
+ type Slots,
+ type ComputedRef
+} from "vue"
 import { NScrollbar, NButton, NSplit } from "naive-ui"
 import { onClickOutside, useWindowSize } from "@vueuse/core"
 import Icon from "@/components/common/Icon.vue"
 
+// Tipos y props
 type SidebarPosition = "left" | "right"
-
 export interface CtxSegmentedPage {
-	mainScrollbar: typeof NScrollbar | null
-	closeSidebar: () => void
-	openSidebar: () => void
+  mainScrollbar: typeof NScrollbar | null
+  closeSidebar: () => void
+  openSidebar: () => void
 }
 
 const emit = defineEmits<{
-	(e: "mounted", value: CtxSegmentedPage): void
-	(e: "sidebar", value: boolean): void
+  (e: "mounted", value: CtxSegmentedPage): void
+  (e: "sidebar", value: boolean): void
 }>()
 
 const props = withDefaults(
-	defineProps<{
-		sidebarPosition?: SidebarPosition
-		hideMenuBtn?: boolean
-		useMainScroll?: boolean
-		mainContentStyle?: string
-		mainContentClass?: string
-		sidebarContentStyle?: string
-		sidebarContentClass?: string
-		enableResize?: boolean
-		disableContainerQuery?: boolean
-	}>(),
-	{ sidebarPosition: "left", useMainScroll: true }
+  defineProps<{
+    sidebarPosition?: SidebarPosition
+    hideMenuBtn?: boolean
+    useMainScroll?: boolean
+    mainContentStyle?: string
+    mainContentClass?: string
+    sidebarContentStyle?: string
+    sidebarContentClass?: string
+    enableResize?: boolean
+    disableContainerQuery?: boolean
+  }>(),
+  { sidebarPosition: "left", useMainScroll: true }
 )
+
 const {
-	sidebarPosition,
-	hideMenuBtn,
-	useMainScroll,
-	mainContentStyle,
-	mainContentClass,
-	sidebarContentStyle,
-	sidebarContentClass
+  sidebarPosition,
+  hideMenuBtn,
+  useMainScroll,
+  mainContentStyle,
+  mainContentClass,
+  sidebarContentStyle,
+  sidebarContentClass
 } = toRefs(props)
 
+// Iconos
 const MenuIcon = "ph:list-light"
 const SplitIcon = "carbon:draggable"
 
-const splitPane = ref()
-const splitDefault = ref(0.3)
-const splitDisabled = ref(false)
+// Refs con tipos explícitos
+const splitPane = ref<InstanceType<typeof NSplit> | null>(null)
+const splitDefault = ref<number>(0.3)
+const splitDisabled = ref<boolean>(false)
 
-const slots = useSlots()
-const sidebarOpen = ref(false)
-const sidebar = ref(null)
-const mainScrollbar = ref<typeof NScrollbar | null>(null)
-const sidebarAvailable = computed(
-	() => !!slots["sidebar-header"] || !!slots["sidebar-content"] || !!slots["sidebar-footer"]
-)
+// **Anotación de Slots**:
+const slots: Slots = useSlots()
 
+// **Anotación de sidebarOpen**:
+const sidebarOpen = ref<boolean>(false)
+
+// **Anotación de sidebar** (si sabes que es HTMLElement):
+const sidebar = ref<HTMLElement | null>(null)
+
+// **sidebarAvailable con ComputedRef<boolean>**
+const sidebarAvailable: ComputedRef<boolean> = computed((): boolean => {
+  return (
+    !!slots["sidebar-header"] ||
+    !!slots["sidebar-content"] ||
+    !!slots["sidebar-footer"]
+  )
+})
+
+// Cierra el sidebar al hacer clic fuera
 onClickOutside(sidebar, () => closeSidebar())
 
-function closeSidebar() {
-	sidebarOpen.value = false
+function closeSidebar(): void {
+  sidebarOpen.value = false
 }
 
-function openSidebar() {
-	sidebarOpen.value = true
+function openSidebar(): void {
+  sidebarOpen.value = true
 }
 
+// Emitir evento cuando se abra/cierre sidebar
 watch(
-	sidebarOpen,
-	val => {
-		emit("sidebar", val)
-	},
-	{ immediate: true }
+  sidebarOpen,
+  (val: boolean) => {
+    emit("sidebar", val)
+  },
+  { immediate: true }
 )
 
+// Ajustar la vista según el tamaño de ventana
 const { width } = useWindowSize()
-
 watch(
-	width,
-	val => {
-		splitDefault.value = val <= 700 ? 0 : 0.3
-		splitDisabled.value = val <= 700
-	},
-	{ immediate: true }
+  width,
+  (val: number) => {
+    splitDefault.value = val <= 700 ? 0 : 0.3
+    splitDisabled.value = val <= 700
+  },
+  { immediate: true }
 )
 
+// Emitir datos al montar
 onMounted(() => {
-	emit("mounted", {
-		mainScrollbar: mainScrollbar.value,
-		closeSidebar,
-		openSidebar
-	})
+  emit("mounted", {
+    mainScrollbar: null, // o la ref a tu scrollbar
+    closeSidebar,
+    openSidebar
+  })
 })
 </script>
 
