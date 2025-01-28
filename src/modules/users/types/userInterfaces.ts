@@ -29,6 +29,8 @@ export interface User {
     email: string;
     password: string;
     role_id?: number;
+    localOnly?: boolean,
+    pendingUpdate?: boolean;
 }
 
 export interface UserState {

@@ -36,12 +36,11 @@ import { useUsers } from "@/modules/users/composables/useUsers";
 import { NInput } from "naive-ui";
 import ModalFrom from "@/modules/users/components/ModalForm.vue";
 import { Table } from "@/components/shared/data-display";
-import {  ButtonSearch, ButtonRegister, ButtonIconEdit } from "@/components/shared/ui";
+import { ButtonSearch, ButtonRegister, ButtonIconEdit } from "@/components/shared/ui";
 import { Pagination } from "@/components/shared/navigation";
 
 import type { TableColumn } from "naive-ui/es/data-table/src/interface";
 import type { User } from "@/modules/users/types/userInterfaces";
-
 
 const showModel = ref(false);
 const modalTitle = ref("Registrar Usuario");
@@ -58,8 +57,8 @@ const {
     user,
 } = useUsers();
 
-onMounted(() => {
-    fetchUsers();
+onMounted(async () => {
+    await fetchUsers();
 });
 
 const columns = [
@@ -72,20 +71,20 @@ const columns = [
         render(row: User) {
             return h(
                 ButtonIconEdit,
-                    {
-                        onClick: () => {
-                            if (row.id !== undefined) {
-                                edit(row.id);
-                            }
+                {
+                    onClick: () => {
+                        if (row.id !== undefined) {
+                            edit(row.id);
                         }
                     }
+                }
             );
         },
     }
 ] as TableColumn[];
 
-function edit(id: number) {
-    getUserById(id);
+async function edit(id: number) {
+    await getUserById(id);
     modalTitle.value = "Editar Usuario";
     showModel.value = true;
 }
@@ -95,10 +94,10 @@ function register() {
     showModel.value = true;
 }
 
-function handleModalClose(show: boolean) {
+async function handleModalClose(show: boolean) {
     showModel.value = show;
     user.value = {} as User;
-    fetchUsers();
+    await fetchUsers();
 }
 
 function fetchUsersLocal() {
