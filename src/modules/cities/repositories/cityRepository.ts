@@ -14,4 +14,9 @@ export const CityRepository = {
     return response.data;
   },
 
+  fetchAllCities: async (): Promise<GetCitiesResponse> => {
+    const response = await axiosHttp.get("cities/all");
+    return response.data;
+  },
+
 };

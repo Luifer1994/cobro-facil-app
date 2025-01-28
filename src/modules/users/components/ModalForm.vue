@@ -22,6 +22,14 @@
                     <n-form-item-gi label="Contraseña" path="password">
                         <n-input v-model:value="user.password" placeholder="Contraseña" />
                     </n-form-item-gi>
+
+                    <n-form-item-gi label="Rol" path="role_id">
+                        <n-select v-model:value="user.role_id" filterable placeholder="Buscar rol" :options="roles.map((role) => ({
+                            value: role.id,
+                            label: role.description,
+                        }))
+                            " :clearable="true" />
+                    </n-form-item-gi>
                 </n-grid>
             </n-form>
             <template #footer>
@@ -48,6 +56,7 @@ import {
     NFormItemGi,
     NIcon,
     NCard,
+    NSelect
 } from "naive-ui";
 import { ButtonSave, ButtonCancel } from '@/components/shared/ui';
 
@@ -56,9 +65,11 @@ import { rules as generateRules } from "@/modules/users/utils/utilsUser";
 
 import { useMessage } from "naive-ui";
 import { useUsers } from "@/modules/users/composables/useUsers";
+import { useRolesAndPermissions } from "@/modules/rolesAndPermissions/composables/useRolesAndPermissions";
 
 const { user, createUser, updateUser, loading } =
     useUsers();
+const { roles, fetchRoles } = useRolesAndPermissions();
 
 // Define los eventos que emitirá el componente
 const emit = defineEmits(["update:show"]);
@@ -125,8 +136,9 @@ const handleValidateButtonClick = (e: MouseEvent) => {
 
 watch(
     () => props.show,
-    (newVal) => {
+    async (newVal) => {
         visible.value = newVal;
+        await fetchRoles();
     }
 );
 </script>

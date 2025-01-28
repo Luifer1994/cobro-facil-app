@@ -1,19 +1,19 @@
-import { defineStore } from "pinia";
-import type { City, CityState } from "@/modules/cities/types/cityInterfaces";
+// src/modules/cities/stores/cityStore.ts
+import { defineStore } from 'pinia'
+import type { City } from '../types/cityInterfaces'
 
 export const useCityStore = defineStore({
-  id: "cityStore",
-  state: (): CityState => ({
+  id: 'cityStore',
+  state: () => ({
     cities: [] as City[],
-    loading: false,
+    loading: false
   }),
   actions: {
-    setCities(cities: City[]) {
-      this.cities = cities;
+    setCities(newCities: City[]) {
+      this.cities = newCities
     },
-
-    setLoading(isLoading: boolean) {
-      this.loading = isLoading;
-    },
-  },
-});
+    setLoading(value: boolean) {
+      this.loading = value
+    }
+  }
+})

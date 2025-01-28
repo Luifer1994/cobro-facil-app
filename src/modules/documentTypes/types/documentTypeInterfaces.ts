@@ -12,4 +12,5 @@ export interface DocumentType {
 
 export interface DocumentTypeState {
     documentTypes: DocumentType[];
+    loading: boolean;
 }

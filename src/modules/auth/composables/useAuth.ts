@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
+import {fetchAllCommonData} from "@/offline/fetchAllCommonData";
 
 export const useAuth = () => {
     const message = useMessage()
@@ -15,6 +16,7 @@ export const useAuth = () => {
         try {
             const response = await authRepository.login(data);
             store.setLogged(response.data.user, response.data.token);
+            await fetchAllCommonData();
             window.location.href = '/';
         } catch (error) {
             message.error('Credenciales incorrectas');

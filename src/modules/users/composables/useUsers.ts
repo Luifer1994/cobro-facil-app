@@ -1,108 +1,114 @@
-import { storeToRefs } from "pinia";
-import { useUserStore } from "@/modules/users/stores/userStore";
-import { UserRepository } from "@/modules/users/repositories/userRepository";
-import type { User } from "@/modules/users/types/userInterfaces";
+import { storeToRefs } from "pinia"
+import { useUserStore } from "@/modules/users/stores/userStore"
+import { UserRepository } from "@/modules/users/repositories/userRepository"
+import { saveUserOffline } from "@/modules/users/composables/offlineUsers"
+import { isConnectionBadOrOffline } from "@/utils/network"
+import type { User } from "@/modules/users/types/userInterfaces"
 
 export function useUsers() {
-  const UserStore = useUserStore();
-
-  // Extraer las propiedades reactivas de la store
+  const UserStore = useUserStore()
   const { users, search, limit, page, meta, loading, user, usersActive } =
-    storeToRefs(UserStore);
+    storeToRefs(UserStore)
 
-  // Función para obtener los usuarios desde la API
+  // Función para obtener usuarios
   const fetchUsers = async () => {
-    UserStore.setLoading(true);
+    UserStore.setLoading(true)
     try {
       const response = await UserRepository.fetchUsers(
         limit.value,
         search.value,
         page.value
-      );
+      )
       const filteredMeta = {
         ...response.data,
         links: response.data.links.slice(1, -1),
-      };
-      UserStore.setUsers(response.data.data);
-      UserStore.setMeta(filteredMeta);
+      }
+      UserStore.setUsers(response.data.data)
+      UserStore.setMeta(filteredMeta)
     } catch (error) {
-      console.error("Error al obtener los usuarios:", error);
+      console.error("Error al obtener los usuarios:", error)
     } finally {
-      UserStore.setLoading(false);
+      UserStore.setLoading(false)
     }
-  };
+  }
 
-  // Función para obtener un usuario por ID
+  // Obtener un usuario por ID
   const getUserById = async (id: number) => {
-    UserStore.setLoading(true);
+    UserStore.setLoading(true)
     try {
-      const user = await UserRepository.getUserById(id);
-      UserStore.setUser(user);
+      const userRes = await UserRepository.getUserById(id)
+      UserStore.setUser(userRes)
     } catch (error) {
-      console.error("Error al obtener el usuario:", error);
+      console.error("Error al obtener usuario:", error)
     } finally {
-      UserStore.setLoading(false);
+      UserStore.setLoading(false)
     }
-  };
+  }
 
-  // Función para crear un nuevo usuario
-  const createUser = async (user: User): Promise<boolean> => {
-    UserStore.setLoading(true);
+  const createUser = async (newUser: User): Promise<boolean> => {
+    UserStore.setLoading(true)
     try {
-      await UserRepository.createUser(user);
-      return true;
+      if (isConnectionBadOrOffline()) {
+        await saveUserOffline(newUser)
+        console.log("Usuario guardado offline (red demasiado lenta o sin conexión).")
+        return true
+      } else {
+        await UserRepository.createUser(newUser)
+        return true
+      }
     } catch (error) {
-      console.error("Error al crear el usuario:", error);
-      return false;
+      console.error("Error al crear usuario en línea:", error)
+      await saveUserOffline(newUser)
+      return false
     } finally {
-      UserStore.setLoading(false);
+      UserStore.setLoading(false)
     }
-  };
+  }
 
-  // Función para actualizar un usuario existente
-  const updateUser = async (user: User): Promise<boolean> => {
-    UserStore.setLoading(true);
+  // Actualizar usuario (aquí no hemos puesto lógica offline de ejemplo, pero podrías hacerlo igual)
+  const updateUser = async (payload: User): Promise<boolean> => {
+    UserStore.setLoading(true)
     try {
-      await UserRepository.updateUser(user);
-      return true;
+      await UserRepository.updateUser(payload)
+      return true
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
-      return false;
+      console.error("Error al actualizar usuario:", error)
+      return false
     } finally {
-      UserStore.setLoading(false);
+      UserStore.setLoading(false)
     }
-  };
+  }
 
-  // Función para obtener los usuarios activos desde la API
+  // Obtener usuarios activos
   const fetchUsersActive = async () => {
-    UserStore.setLoading(true);
+    UserStore.setLoading(true)
     try {
-      const usersActive = await UserRepository.getActiveUsers();
-      UserStore.setUsersActive(usersActive);
+      const usersActives = await UserRepository.getActiveUsers()
+      UserStore.setUsersActive(usersActives)
     } catch (error) {
-      console.error("Error al obtener los usuarios activos:", error);
+      console.error("Error al obtener usuarios activos:", error)
     } finally {
-      UserStore.setLoading(false);
+      UserStore.setLoading(false)
     }
-  };
+  }
 
-  // Función para actualizar el término de búsqueda
+  // Actualizar búsqueda
   const updateSearch = (newSearch: string) => {
-    UserStore.setSearch(newSearch);
-  };
+    UserStore.setSearch(newSearch)
+  }
 
-  // Función para actualizar el tamaño de página (limit)
+  // Actualizar el tamaño de página
   const updatePageSize = (newLimit: number) => {
-    UserStore.setLimit(newLimit);
-    updatePage(1);
-    fetchUsers(); // Refrescar los datos con el nuevo tamaño de página
-  };
+    UserStore.setLimit(newLimit)
+    updatePage(1)
+    fetchUsers()
+  }
 
-  // Función para actualizar la página actual
+  // Actualizar página actual
   const updatePage = (newPage: number) => {
-    UserStore.setPage(newPage);
-    fetchUsers(); // Refrescar los datos con la nueva página
-  };
+    UserStore.setPage(newPage)
+    fetchUsers()
+  }
 
   return {
     users,
@@ -111,15 +117,16 @@ export function useUsers() {
     page,
     meta,
     loading,
+    user,
+    usersActive,
+
     fetchUsers,
     getUserById,
     createUser,
     updateUser,
+    fetchUsersActive,
     updateSearch,
     updatePageSize,
-    updatePage,
-    user,
-    fetchUsersActive,
-    usersActive,
-  };
+    updatePage
+  }
 }

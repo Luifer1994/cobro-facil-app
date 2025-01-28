@@ -13,6 +13,12 @@ export const rules: (isCreating: boolean) => FormRules = (isCreating) => ({
         trigger: ["input"],
         type: "email",
     },
+    role_id: {
+        required: true,
+        message: "El rol es requerido",
+        trigger: ["input"],
+        type: "number",
+    },
     ...(isCreating && {
         password: {
             required: true,
