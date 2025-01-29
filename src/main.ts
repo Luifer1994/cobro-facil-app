@@ -9,7 +9,6 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate"
 import { syncAllOfflineData } from "@/offline/syncAllOfflineData"
 
 window.addEventListener('online', () => {
-  console.log("Detectado modo online. Sincronizando datos offline...")
   syncAllOfflineData()
 })
 

@@ -21,7 +21,6 @@ export async function fetchAllCommonData() {
       fetchAllCities(),
       // etc.
     ])
-    console.log("Todos los catálogos cargados correctamente")
   } catch (error) {
     console.error("Error al cargar los catálogos comunes:", error)
   }
