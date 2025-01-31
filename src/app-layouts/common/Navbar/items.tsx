@@ -49,6 +49,13 @@ export default function getItems(
       permission: ["clients-module"],
       routeName: "client-list"
     },
+    {
+      label: "Prestamos",
+      key: "loans-list",
+      icon: "hugeicons:money-bag-02",
+      permission: ["loans-module"],
+      routeName: "loans-list"
+    }
   ];
 
   return menuItems

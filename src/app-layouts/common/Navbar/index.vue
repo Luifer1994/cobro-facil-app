@@ -19,63 +19,83 @@
   </template>
   
   <script lang="ts" setup>
-  import { type MenuInst, NMenu } from "naive-ui"
-  import getItems from "./items"
-  import { useThemeStore } from "@/stores/theme"
-  import { type MenuMixedOption } from "naive-ui/es/menu/src/interface"
-  import { computed, onBeforeMount, ref, toRefs } from "vue"
-  import { useRouter, useRoute } from "vue-router"
-  
-  const props = withDefaults(
-	defineProps<{
-	  mode?: "vertical" | "horizontal"
-	  collapsed?: boolean
-	}>(),
-	{ mode: "vertical", collapsed: false }
-  )
-  const { mode, collapsed } = toRefs(props)
-  
-  const route = useRoute()
-  const router = useRouter()
-  const activeKey = ref<string | null>(null)
-  const menu = ref<MenuInst | null>(null)
-  
-  const themeStore = useThemeStore()
-  
-  const menuOptions = computed<MenuMixedOption[]>(() => getItems(mode.value, collapsed.value))
-  const collapsedWidth = computed<number>(() => themeStore.sidebar.closeWidth)
-  const sidebarCollapsed = computed<boolean>(() => themeStore.sidebar.collapsed)
-  
-  function setActiveKey(routeName: string) {
-	// Special handling for tenant routes
-	if (routeName === 'tenant-list' || routeName === 'tenant-detail') {
-	  activeKey.value = 'tenant'
-	  return
-	}
-	
-	// For other routes, find the matching menu item
-	const menuItem = menuOptions.value.find(item => 
-	  item.key === routeName
-	)
-	activeKey.value = menuItem?.key?.toString() || null
+import { type MenuInst, NMenu } from "naive-ui"
+import getItems from "./items"
+import { useThemeStore } from "@/stores/theme"
+import { type MenuMixedOption } from "naive-ui/es/menu/src/interface"
+import { computed, onBeforeMount, ref, toRefs } from "vue"
+import { useRouter, useRoute, type RouteLocationNormalized } from "vue-router"
+
+const props = withDefaults(
+  defineProps<{
+    mode?: "vertical" | "horizontal"
+    collapsed?: boolean
+  }>(),
+  { mode: "vertical", collapsed: false }
+)
+const { mode, collapsed } = toRefs(props)
+
+const route = useRoute()
+const router = useRouter()
+const activeKey = ref<string | null>(null)
+const menu = ref<MenuInst | null>(null)
+
+const themeStore = useThemeStore()
+
+const menuOptions = computed<MenuMixedOption[]>(() => getItems(mode.value, collapsed.value))
+const collapsedWidth = computed<number>(() => themeStore.sidebar.closeWidth)
+const sidebarCollapsed = computed<boolean>(() => themeStore.sidebar.collapsed)
+
+/**
+ * Establece la clave activa según la ruta actual.
+ * Se utiliza la propiedad `route.matched` para recorrer la jerarquía de rutas y
+ * buscar aquella que coincida con alguna opción del menú.
+ */
+function setActiveKeyByRoute(currentRoute: RouteLocationNormalized) {
+  // Si el nombre de la ruta actual coincide directamente con alguna opción del menú, lo usamos
+  if (currentRoute.name && menuOptions.value.some(item => item.key === currentRoute.name)) {
+    activeKey.value = currentRoute.name.toString()
+    return
   }
   
-  onBeforeMount(() => {
-	if (route.name) {
-	  setActiveKey(route.name.toString())
-	}
+  // Sino, recorremos la jerarquía de rutas (excluyendo la última, que es la más específica)
+  // en orden inverso para encontrar el primer registro (padre) cuyo nombre esté en el menú.
+  const parentMatch = currentRoute.matched
+    .slice(0, -1) // quitamos el registro más específico (la ruta hija)
+    .reverse()
+    .find(record => record.name && menuOptions.value.some(item => item.key === record.name))
   
-	router.afterEach(route => {
-	  if (route?.name) {
-		setActiveKey(route.name.toString())
-	  }
-  
-	  if (window.innerWidth <= 700 && !sidebarCollapsed.value) {
-		themeStore.closeSidebar()
-	  }
-	})
+  if (parentMatch && parentMatch.name) {
+    activeKey.value = parentMatch.name.toString()
+  } else {
+    // Si no se encuentra ninguna coincidencia, se deja en null o se puede asignar un valor por defecto.
+    activeKey.value = null
+  }
+}
+
+onBeforeMount(() => {
+  // En el montaje inicial, establecemos la clave activa según la ruta actual
+  if (route.name) {
+    setActiveKeyByRoute(route)
+  }
+
+  router.afterEach(newRoute => {
+    // Si la ruta tiene registros 'matched' (por ejemplo, tiene rutas hijas o anidadas),
+    // podemos verlos con: newRoute.matched
+    // console.log(newRoute.matched)
+
+    if (newRoute?.name) {
+      setActiveKeyByRoute(newRoute)
+    }
+
+    // Si la ventana es pequeña, cierra la sidebar (esto es tu lógica adicional)
+    if (window.innerWidth <= 700 && !sidebarCollapsed.value) {
+      themeStore.closeSidebar()
+    }
   })
-  </script>
+})
+</script>
+
   
   <style lang="scss" scoped>
   .nav {

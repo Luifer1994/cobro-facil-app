@@ -15,9 +15,9 @@ const formatCurrency = (number: number) => {
       currency += separator + thousand.join(".");
     }
 
-    return currency;
+    return "$"+currency;
   } else {
-    return "";
+    return "$0";
   }
 };
 

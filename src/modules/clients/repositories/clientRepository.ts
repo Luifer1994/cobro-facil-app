@@ -34,7 +34,7 @@ export const ClientRepository = {
   },
 
   getActiveClients: async (): Promise<Client[]> => {
-    const response = await axiosHttp.get("clients/list-active");
+    const response = await axiosHttp.get("clients/all");
     return response.data.data;
   },
 };

@@ -201,10 +201,10 @@ export function useClients() {
       if (!isConnectionBadOrOffline()) {
         const clientsActives = await ClientRepository.getActiveClients();
         ClientStore.setClientsActive(clientsActives);
+        await saveClientsOffline(clientsActives);
       } else {
         const allLocal = await getOfflineClients();
-        const actives = allLocal.filter((u) => (u as any).status === "active");
-        ClientStore.setClientsActive(actives);
+        ClientStore.setClientsActive(allLocal);
       }
     } catch (error) {
       console.error("Error al obtener usuarios activos:", error);

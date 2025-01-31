@@ -30,6 +30,11 @@ export async function getDB() {
       if (!db.objectStoreNames.contains('cities_offline')) {
         db.createObjectStore('cities_offline', { keyPath: 'id' })
       }
+
+      // Store para loans offline
+      if (!db.objectStoreNames.contains('loans_offline')) {
+        db.createObjectStore('loans_offline', { keyPath: 'id' })
+      }
     }
   })
 }

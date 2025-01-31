@@ -7,8 +7,8 @@
 					<BrainIcon />
 				</Icon>
 				Por
-				<a href="https://sabormanager.com" target="_blank" alt="Cobro Fácil" rel="noopener noreferrer" class="mx-1">
-					Cobro Fácil
+				<a href="https://www.linkedin.com/in/luis-fernando-almendrales-ferreira-11b1081b2/" target="_blank" alt="Luis Almendrales" rel="noopener noreferrer" class="mx-1">
+					Luifer Almendrales
 				</a>
 				Todos los derechos reservados © Copyright {{ year }}
 			</div>
