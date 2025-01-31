@@ -3,13 +3,13 @@ import type { RouteRecordRaw } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/tenant",
-    name: "Tenant",
-    redirect: "/Tenant/list",
+    name: "tenant",
+    redirect: "/tenant/list",
     meta: { title: "Inquilinos", auth: true, permission: "tenants-module" },
     children: [
       {
         path: "list",
-        name: "Tenant-list",
+        name: "tenant-list",
         component: () => import("@/modules/tenants/views/Index.vue"),
         meta: {
           title: "Lista de Inquilinos",
@@ -19,7 +19,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: ":id",
-        name: "Tenant-detail",
+        name: "tenant-detail",
         component: () => import("@/modules/tenants/views/Detail.vue"),
         meta: {
           title: "Detalle de inquilino",

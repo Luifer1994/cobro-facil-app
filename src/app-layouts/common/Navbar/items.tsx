@@ -26,7 +26,7 @@ export default function getItems(
       key: "tenant",
       icon: "fluent-mdl2:home-verify",
       permission: ["tenants-module"],
-      routeName: "Tenant-list"
+      routeName: "tenant-list"
     },
     {
       label: "Planes",

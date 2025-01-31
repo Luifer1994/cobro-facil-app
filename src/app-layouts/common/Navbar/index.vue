@@ -47,9 +47,9 @@
   const sidebarCollapsed = computed<boolean>(() => themeStore.sidebar.collapsed)
   
   function setActiveKey(routeName: string) {
-	// Special handling for Tenant routes
-	if (routeName === 'Tenant-list' || routeName === 'Tenant-detail') {
-	  activeKey.value = 'Tenant'
+	// Special handling for tenant routes
+	if (routeName === 'tenant-list' || routeName === 'tenant-detail') {
+	  activeKey.value = 'tenant'
 	  return
 	}
 	
