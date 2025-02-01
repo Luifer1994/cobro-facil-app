@@ -23,7 +23,6 @@ export async function updateLoanOffline(loan: Loan) {
   const db = await getDB()
   const rawLoan = JSON.parse(JSON.stringify(loan))
   await db.put('loans_offline', rawLoan)
-  console.log('prestamo actualizado offline (update):', rawLoan)
 }
 
 /**
@@ -63,7 +62,6 @@ export async function getOfflineLoans(): Promise<Loan[]> {
 export async function removeOfflineLoan(id: number) {
   const db = await getDB()
   await db.delete('loans_offline', id)
-  console.log('prestamo offline eliminado, ID:', id)
 }
 
 /**
@@ -92,7 +90,6 @@ export async function syncOfflineLoans() {
         const rawCreated = JSON.parse(JSON.stringify(created))
         await db.put('loans_offline', rawCreated)
 
-        console.log('prestamo creado en server y offline:', created)
       }
       else if (loan.pendingUpdate) {
         // Ya existe en el server => PUT update
@@ -111,7 +108,6 @@ export async function syncOfflineLoans() {
         const rawUpdated = JSON.parse(JSON.stringify(updated))
         await db.put('loans_offline', rawUpdated)
 
-        console.log('prestamo actualizado en server y offline:', updated)
       }
       else {
         // Ni localOnly ni pendingUpdate => no hacemos nada

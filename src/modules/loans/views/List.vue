@@ -61,6 +61,7 @@ const {
 
 onMounted(async () => {
     await fetchLoans();
+    await fetchClientsActive();
 });
 
 const columns = [

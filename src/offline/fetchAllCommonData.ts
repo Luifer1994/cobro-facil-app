@@ -16,19 +16,20 @@ export async function fetchAllCommonData() {
     const { fetchRoles } = useRolesAndPermissions();
     const { fetchDocumentTypes } = useDocumentType();
     const { fetchAllCities } = useCity();
+    const { fetchLoans } = useLoans();
+    const { fetchClientsActive } = useClients();
 
-    // Llamas a cada uno
+    // Llamamos a los métodos obligatorios
     await Promise.all([fetchRoles(), fetchDocumentTypes(), fetchAllCities()]);
 
-    /*  estos solo si en el local store existe tenant y tiene un id y si el validTenant es true tambien en localStore */
-    if (
-      localStorage.getItem("tenant") &&
-      localStorage.getItem("validTenant") === "true"
-    ) {
-      const { fetchLoans } = useLoans();
-      const { fetchClientsActive } = useClients();
+    // Extraer y revisar valores en localStorage
+    const tenant = localStorage.getItem("tenant");
+    const validTenant = localStorage.getItem("validTenant");
+
+    // Si existe un tenant y validTenant es exactamente "true", se ejecuta el bloque
+    if (tenant && validTenant === "true") {
       await Promise.all([fetchLoans(), fetchClientsActive()]);
-    }
+    } 
   } catch (error) {
     console.error("Error al cargar los catálogos comunes:", error);
   }

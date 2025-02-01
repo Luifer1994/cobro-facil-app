@@ -39,7 +39,10 @@ export async function getDB() {
 
       // Store para loans offline
       if (!db.objectStoreNames.contains("loans_offline")) {
-        db.createObjectStore("loans_offline", { keyPath: "id" });
+        db.createObjectStore("loans_offline", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
       }
     },
   });
