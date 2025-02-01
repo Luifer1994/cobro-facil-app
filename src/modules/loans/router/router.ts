@@ -13,6 +13,12 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import("@/modules/loans/views/List.vue"),
                 meta: { title: "Lista de Prestamos", auth: true, permission: "loans-module" }
             },
+            {
+                path: ":id",
+                name: "loans-detail",
+                component: () => import("@/modules/loans/views/Detail.vue"),
+                meta: { title: "Detalle de Prestamo", auth: true, permission: "loans-show" }
+            }
         ]
     }
 ];

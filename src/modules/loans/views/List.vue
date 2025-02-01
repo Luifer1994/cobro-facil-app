@@ -36,11 +36,13 @@ import { useLoans } from "@/modules/loans/composables/useLoans";
 import { NInput, NTag } from "naive-ui";
 import ModalFrom from "@/modules/loans/components/ModalForm.vue";
 import { Table } from "@/components/shared/data-display";
-import { ButtonSearch, ButtonRegister, ButtonIconEdit } from "@/components/shared/ui";
+import { ButtonSearch, ButtonRegister, ButtonIconEdit,ButtonIconShow } from "@/components/shared/ui";
 import { Pagination } from "@/components/shared/navigation";
 import { formatCurrency, formatDate } from "@/utils/helpers";
 import type { TableColumn } from "naive-ui/es/data-table/src/interface";
 import type { Loan } from "@/modules/loans/types/loanInterfaces";
+import { useRouter } from 'vue-router';
+const router = useRouter()
 
 const showModel = ref(false);
 const modalTitle = ref("Registrar Prestamo");
@@ -116,10 +118,32 @@ const columns = [
         title: "Acción",
         key: "actions",
         render(row: Loan) {
-            return h(
-                ButtonIconEdit,
-                { onClick: () => row.id && edit(row.id) }
-            );
+            return h('div', { class: 'flex space-x-2' }, [
+                // Botón de Editar
+                h(
+                    ButtonIconEdit,
+                    {
+                        onClick: () => {
+                            if (row.id !== undefined) {
+                                edit(row.id);
+                            }
+                        },
+
+                    }
+                ),
+                // Botón de Detalles
+                h(
+                    ButtonIconShow,
+                    {
+                        type: "info",
+                        onClick: () => {
+                            if (row.id !== undefined) {
+                                router.push(`/loans/${row.id}`);
+                            }
+                        }
+                    }
+                )
+            ]);
         },
     }
 ] as TableColumn[];
