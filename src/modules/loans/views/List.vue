@@ -36,7 +36,7 @@ import { useLoans } from "@/modules/loans/composables/useLoans";
 import { NInput, NTag } from "naive-ui";
 import ModalFrom from "@/modules/loans/components/ModalForm.vue";
 import { Table } from "@/components/shared/data-display";
-import { ButtonSearch, ButtonRegister, ButtonIconEdit,ButtonIconShow } from "@/components/shared/ui";
+import { ButtonSearch, ButtonRegister, ButtonIconEdit, ButtonIconShow } from "@/components/shared/ui";
 import { Pagination } from "@/components/shared/navigation";
 import { formatCurrency, formatDate } from "@/utils/helpers";
 import type { TableColumn } from "naive-ui/es/data-table/src/interface";
@@ -121,17 +121,7 @@ const columns = [
         render(row: Loan) {
             return h('div', { class: 'flex space-x-2' }, [
                 // Botón de Editar
-                h(
-                    ButtonIconEdit,
-                    {
-                        onClick: () => {
-                            if (row.id !== undefined) {
-                                edit(row.id);
-                            }
-                        },
-
-                    }
-                ),
+               
                 // Botón de Detalles
                 h(
                     ButtonIconShow,

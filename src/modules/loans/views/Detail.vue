@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-gray-50 w-100">
-        <div class="max-w-7xl mx-auto">
+        <div class="mx-auto">
             <!-- Back Button -->
             <div class="mb-6">
                 <ButtonArrow icon="left" text="Atrás" redirect="/loans" />

@@ -51,7 +51,7 @@ export default function getItems(
     },
     {
       label: "Prestamos",
-      key: "loans-list",
+      key: "loans",
       icon: "hugeicons:money-bag-02",
       permission: ["loans-module"],
       routeName: "loans-list"
